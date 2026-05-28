@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TallyAI — AI-Powered Bookkeeping in Google Sheets</title>
+<meta name="description" content="AI Smart Bookkeeping Template for Google Sheets. Describe expenses in plain English, AI auto-categorizes. No install, no API key needed.">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #1a1a1a;
+    background: #faf8f5;
+    line-height: 1.6;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, #1a3a2a 0%, #2d5a3f 100%);
+    color: white;
+    padding: 80px 0 60px;
+    text-align: center;
+  }
+  .hero h1 { font-size: 2.8em; margin-bottom: 12px; letter-spacing: -1px; }
+  .hero .subtitle { font-size: 1.15em; opacity: 0.9; max-width: 600px; margin: 0 auto 28px; }
+  .hero .cta {
+    display: inline-block;
+    background: #4CAF50;
+    color: white;
+    padding: 14px 36px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1em;
+    transition: background 0.2s;
+  }
+  .hero .cta:hover { background: #388E3C; }
+
+  /* Sections */
+  section { padding: 60px 0; }
+  section:nth-child(even) { background: white; }
+  h2 { font-size: 1.8em; margin-bottom: 24px; text-align: center; }
+  h3 { font-size: 1.2em; margin-bottom: 8px; }
+
+  /* Features grid */
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin-top: 32px; }
+  .feature {
+    background: #f5f3f0;
+    padding: 24px;
+    border-radius: 12px;
+    text-align: center;
+  }
+  .feature .icon { font-size: 2em; margin-bottom: 12px; }
+  .feature p { font-size: 0.92em; color: #555; }
+
+  /* Demo images */
+  .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+  .demo-grid img { width: 100%; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
+
+  /* Products */
+  .product-list { margin-top: 24px; }
+  .product-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px;
+    background: #faf8f5;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  .product-item:hover { background: #f0ece5; }
+  .product-item .price { font-weight: 600; color: #2d5a3f; }
+  .product-item a { text-decoration: none; color: inherit; display: flex; justify-content: space-between; width: 100%; }
+
+  /* FAQ */
+  .faq-item { margin-bottom: 20px; }
+  .faq-item h4 { margin-bottom: 4px; color: #2d5a3f; }
+
+  /* Footer */
+  footer {
+    background: #1a1a1a;
+    color: #888;
+    text-align: center;
+    padding: 32px 0;
+    font-size: 0.9em;
+  }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 1.8em; }
+    .demo-grid { grid-template-columns: 1fr; }
+    .features { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="container">
+    <h1>TallyAI</h1>
+    <p class="subtitle">AI-powered bookkeeping inside Google Sheets. Describe expenses in plain words — the AI handles the rest. No installation, no API key, no learning curve.</p>
+    <a href="https://www.etsy.com/shop/TallyAI" class="cta">Browse on Etsy →</a>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h2>How It Works</h2>
+    <div class="features">
+      <div class="feature">
+        <div class="icon">🗣️</div>
+        <h3>Describe It</h3>
+        <p>"coffee meeting $4.50", "client invoice $1200" — plain English or 6 other languages</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🤖</div>
+        <h3>AI Categorizes</h3>
+        <p>Auto-sorts into correct categories. No formulas, no nested IFs, no manual tagging</p>
+      </div>
+      <div class="feature">
+        <div class="icon">📊</div>
+        <h3>Monthly Reports</h3>
+        <p>AI writes a plain-English monthly summary: trends, outliers, tax-ready numbers</p>
+      </div>
+      <div class="feature">
+        <div class="icon">📱</div>
+        <h3>Works Everywhere</h3>
+        <p>In Google Sheets on desktop, mobile, or tablet. Dictate expenses via phone keyboard</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h2>See It In Action</h2>
+    <div class="demo-grid">
+      <img src="tallyai-demo1.jpg" alt="AI Quick Entry sidebar" loading="lazy">
+      <img src="tallyai-demo2.jpg" alt="Monthly AI-generated report" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h2>What You Get</h2>
+    <div class="features">
+      <div class="feature">
+        <h3>✓ AI-Powered Recording</h3>
+        <p>Describe purchases in plain language — the AI extracts date, amount, category instantly</p>
+      </div>
+      <div class="feature">
+        <h3>✓ CSV Bank Import</h3>
+        <p>Drop your bank CSV and the AI categorizes the entire backlog</p>
+      </div>
+      <div class="feature">
+        <h3>✓ Multi-Currency</h3>
+        <p>Any currency with live exchange rates. Import foreign transactions seamlessly</p>
+      </div>
+      <div class="feature">
+        <h3>✓ Auto-Learning</h3>
+        <p>Correct a category once, the AI remembers. Gets smarter the more you use it</p>
+      </div>
+      <div class="feature">
+        <h3>✓ 7 Languages</h3>
+        <p>English, Chinese, Spanish, French, German, Portuguese, Japanese</p>
+      </div>
+      <div class="feature">
+        <h3>✓ No ChatGPT Key Needed</h3>
+        <p>The AI is built into the template. No external accounts, no subscriptions</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h2>Available Templates</h2>
+    <p style="text-align:center;margin-bottom:20px;color:#666;">AI bookkeeping templates tailored for different professions — all powered by the same AI engine</p>
+    <div class="product-list">
+      <a href="https://www.etsy.com/listing/4511473106" class="product-item"><span>AI Bookkeeping Template (General)</span><span class="price">$12.99</span></a>
+      <a href="https://www.etsy.com/listing/4512260794" class="product-item"><span>Multiple Income / Side Hustle Tracker</span><span class="price">$12.99</span></a>
+      <a href="https://www.etsy.com/listing/4512260778" class="product-item"><span>Tax Deduction Spreadsheet</span><span class="price">$12.99</span></a>
+      <a href="https://www.etsy.com/listing/4512055462" class="product-item"><span>Voice-Ready Bookkeeping Template</span><span class="price">$12.99</span></a>
+      <a href="https://www.etsy.com/listing/4512065780" class="product-item"><span>All-in-One Bookkeeping Template</span><span class="price">$12.99</span></a>
+      <a href="https://www.etsy.com/listing/4512064247" class="product-item"><span>Etsy Seller Bookkeeping Template</span><span class="price">$12.99</span></a>
+      <a href="https://www.etsy.com/listing/4512064089" class="product-item"><span>Multi-Language Bookkeeping Template</span><span class="price">$12.99</span></a>
+      <a href="https://www.etsy.com/listing/4512259485" class="product-item"><span>Freelance Invoice Tracker</span><span class="price">$12.99</span></a>
+      <a href="https://www.etsy.com/listing/4512255472" class="product-item"><span>Self-Employed Tax Organizer</span><span class="price">$14.99</span></a>
+      <a href="https://www.etsy.com/listing/4512275152" class="product-item"><span>Personal Trainer Expense Log</span><span class="price">$14.99</span></a>
+      <a href="https://www.etsy.com/listing/4512273735" class="product-item"><span>Salon Owner Bookkeeping</span><span class="price">$14.99</span></a>
+      <a href="https://www.etsy.com/listing/4512274144" class="product-item"><span>Photographer Expense Tracker</span><span class="price">$14.99</span></a>
+      <a href="https://www.etsy.com/listing/4512272753" class="product-item"><span>Consultant Business Tracker</span><span class="price">$14.99</span></a>
+      <a href="https://www.etsy.com/listing/4512274222" class="product-item"><span>Landlord Rental Property Tracker</span><span class="price">$16.99</span></a>
+      <a href="https://www.etsy.com/listing/4512255461" class="product-item"><span>☯ Freelancer Finance Bundle</span><span class="price">$27.99</span></a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h2>FAQ</h2>
+    <div class="faq-item">
+      <h4>Do I need to know Google Sheets?</h4>
+      <p>Basic familiarity is enough. The AI handles the complex parts. Just type what you spent.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Is my financial data safe?</h4>
+      <p>Yes. Everything stays in your Google account. No data is sent to external servers or stored elsewhere.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Do I need an OpenAI / ChatGPT key?</h4>
+      <p>No. The AI runs entirely within the template. No API keys, no subscriptions, no external services.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Can I use this on my phone?</h4>
+      <p>Yes. Works in the Google Sheets mobile app. Use your phone's dictation to record expenses hands-free.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Is this a one-time purchase?</h4>
+      <p>Yes. You pay once, download the template, and own it forever. Unlimited copies to your own Google Drive.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>TallyAI — AI Smart Bookkeeping Template for Google Sheets</p>
+    <p style="margin-top:8px;"><a href="https://www.etsy.com/shop/TallyAI" style="color:#4CAF50;">Visit our Etsy shop</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
