@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Etsy Profit Calculator — Real Fee Breakdown | TallyAI</title>
+<meta name="description" content="Calculate your real Etsy profit after all fees: listing fee, transaction fee (6.5%), payment processing (3% + $0.25), and offsite ads. Free tool by TallyAI.">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #faf8f5;
+    color: #1a1a1a;
+    line-height: 1.5;
+  }
+  .container { max-width: 700px; margin: 0 auto; padding: 0 20px; }
+
+  header {
+    background: linear-gradient(135deg, #1a3a2a, #2d5a3f);
+    color: white;
+    padding: 40px 0 32px;
+    text-align: center;
+  }
+  header h1 { font-size: 2em; margin-bottom: 8px; }
+  header p { opacity: 0.85; font-size: 1.05em; }
+
+  .calculator { background: white; border-radius: 12px; padding: 28px; margin: -24px auto 20px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); position: relative; }
+  .calc-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .calc-row label { font-weight: 500; font-size: 0.95em; min-width: 140px; }
+  .calc-row input {
+    width: 180px; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px;
+    font-size: 1em; text-align: right;
+  }
+  .calc-row input:focus { outline: none; border-color: #4CAF50; box-shadow: 0 0 0 2px rgba(76,175,80,0.15); }
+  .calc-row .hint { font-size: 0.82em; color: #888; }
+
+  .toggle-row { display: flex; align-items: center; margin-bottom: 14px; gap: 10px; }
+  .toggle-row label { font-weight: 500; font-size: 0.95em; }
+  .toggle {
+    position: relative; width: 44px; height: 24px; cursor: pointer;
+    background: #ccc; border-radius: 12px; transition: 0.2s; flex-shrink: 0;
+  }
+  .toggle.active { background: #4CAF50; }
+  .toggle::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 20px; height: 20px; background: white; border-radius: 50%; transition: 0.2s;
+  }
+  .toggle.active::after { left: 22px; }
+
+  .results { background: #f0f7f3; border-radius: 8px; padding: 20px; margin-top: 20px; }
+  .result-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 0.95em; }
+  .result-row.total { border-top: 2px solid #2d5a3f; margin-top: 8px; padding-top: 12px; font-weight: 700; font-size: 1.1em; }
+  .result-row .negative { color: #c0392b; }
+  .result-row .positive { color: #2d5a3f; }
+
+  .cta-section {
+    text-align: center; padding: 32px 0 16px;
+  }
+  .cta-section p { margin-bottom: 12px; color: #555; }
+  .cta-section a {
+    display: inline-block; background: #4CAF50; color: white; padding: 12px 28px;
+    border-radius: 8px; text-decoration: none; font-weight: 600;
+  }
+  .cta-section a:hover { background: #388E3C; }
+
+  .disclaimer { text-align: center; font-size: 0.8em; color: #999; padding: 20px 0; }
+
+  @media (max-width: 500px) {
+    .calc-row { flex-direction: column; align-items: stretch; }
+    .calc-row input { width: 100%; }
+    header h1 { font-size: 1.5em; }
+  }
+
+  /* reset button */
+  .reset-btn {
+    background: none; border: 1px solid #ddd; border-radius: 6px;
+    padding: 6px 14px; font-size: 0.85em; color: #888; cursor: pointer;
+    margin-top: 10px;
+  }
+  .reset-btn:hover { border-color: #999; color: #555; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>Etsy Profit Calculator</h1>
+    <p>See your real profit after all Etsy fees</p>
+  </div>
+</header>
+
+<div class="container">
+  <div class="calculator">
+    <div class="calc-row">
+      <label for="salePrice">Sale Price ($)</label>
+      <input type="number" id="salePrice" value="25" step="1" min="0" oninput="calculate()">
+    </div>
+    <div class="calc-row">
+      <label for="itemCost">Item Cost ($)</label>
+      <input type="number" id="itemCost" value="5" step="1" min="0" oninput="calculate()">
+      <span class="hint">materials + labor</span>
+    </div>
+    <div class="calc-row">
+      <label for="shipping">Shipping Cost ($)</label>
+      <input type="number" id="shipping" value="4" step="0.5" min="0" oninput="calculate()">
+    </div>
+    <div class="toggle-row">
+      <div class="toggle" id="offsiteToggle" onclick="this.classList.toggle('active');calculate()"></div>
+      <label>Offsite Ads (15% fee)</label>
+    </div>
+
+    <div class="results" id="results">
+      <div class="result-row"><span>Listing Fee</span><span id="listingFee">$0.20</span></div>
+      <div class="result-row"><span>Transaction Fee (6.5%)</span><span id="transactionFee" class="negative">-$1.63</span></div>
+      <div class="result-row"><span>Payment Processing (3% + $0.25)</span><span id="paymentFee" class="negative">-$1.00</span></div>
+      <div class="result-row" id="offsiteRow" style="display:none"><span>Offsite Ads (15%)</span><span id="offsiteFee" class="negative">-$3.75</span></div>
+      <div class="result-row total"><span>Your Net Profit</span><span id="netProfit">$12.92</span></div>
+      <div class="result-row"><span style="font-size:0.85em;color:#888;">Effective Fee Rate</span><span id="feeRate" style="font-size:0.85em;color:#888;">33.5%</span></div>
+    </div>
+
+    <div style="text-align:center;">
+      <button class="reset-btn" onclick="resetCalc()">Reset to defaults</button>
+    </div>
+  </div>
+
+  <div class="cta-section">
+    <p>Running an Etsy shop?<br>TallyAI auto-tracks your sales, fees, and profit in Google Sheets.</p>
+    <a href="https://www.etsy.com/shop/TallyAI">Try TallyAI →</a>
+  </div>
+
+  <div class="disclaimer">
+    This calculator is for illustration. Actual fees may vary based on your location, payment method, and Etsy's current fee schedule.
+  </div>
+</div>
+
+<script>
+function fmt(n) { return (n < 0 ? '-$' : '$') + Math.abs(n).toFixed(2); }
+
+function calculate() {
+  const salePrice = parseFloat(document.getElementById('salePrice').value) || 0;
+  const itemCost = parseFloat(document.getElementById('itemCost').value) || 0;
+  const shipping = parseFloat(document.getElementById('shipping').value) || 0;
+  const hasOffsite = document.getElementById('offsiteToggle').classList.contains('active');
+
+  const listingFee = 0.20;
+  const transactionFee = salePrice * 0.065;
+  const paymentFee = (salePrice * 0.03) + 0.25;
+  const offsiteFee = hasOffsite ? salePrice * 0.15 : 0;
+
+  const totalFees = listingFee + transactionFee + paymentFee + offsiteFee;
+  const netRevenue = salePrice - totalFees;
+  const netProfit = netRevenue - itemCost - shipping;
+  const effectiveRate = salePrice > 0 ? (totalFees / salePrice * 100) : 0;
+
+  document.getElementById('listingFee').textContent = fmt(listingFee);
+  document.getElementById('transactionFee').textContent = fmt(-transactionFee);
+  document.getElementById('paymentFee').textContent = fmt(-paymentFee);
+
+  const offsiteEl = document.getElementById('offsiteRow');
+  const offsiteFeeEl = document.getElementById('offsiteFee');
+  if (hasOffsite) {
+    offsiteEl.style.display = 'flex';
+    offsiteFeeEl.textContent = fmt(-offsiteFee);
+  } else {
+    offsiteEl.style.display = 'none';
+  }
+
+  const profitEl = document.getElementById('netProfit');
+  profitEl.textContent = fmt(netProfit);
+  profitEl.className = netProfit >= 0 ? 'positive' : 'negative';
+
+  document.getElementById('feeRate').textContent = effectiveRate.toFixed(1) + '%';
+}
+
+function resetCalc() {
+  document.getElementById('salePrice').value = 25;
+  document.getElementById('itemCost').value = 5;
+  document.getElementById('shipping').value = 4;
+  document.getElementById('offsiteToggle').classList.remove('active');
+  calculate();
+}
+
+calculate();
+</script>
+</body>
+</html>
