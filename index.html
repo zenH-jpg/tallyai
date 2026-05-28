@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TallyAI — AI-Powered Bookkeeping in Google Sheets</title>
 <meta name="description" content="AI Smart Bookkeeping Template for Google Sheets. Describe expenses in plain English, AI auto-categorizes. No install, no API key needed.">
+<meta property="og:title" content="TallyAI — AI-Powered Bookkeeping">
+<meta property="og:description" content="Describe expenses in plain English. AI auto-categorizes in Google Sheets. Free edition available.">
+<meta property="og:url" content="https://zenh-jpg.github.io/tallyai/">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://zenh-jpg.github.io/tallyai/">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -90,6 +95,22 @@
     .features { grid-template-columns: 1fr; }
   }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "TallyAI",
+  "description": "AI-powered bookkeeping in Google Sheets. Describe expenses in plain English, AI auto-categorizes.",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Any (Google Sheets)",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "description": "Free edition with 50-entry limit"
+  }
+}
+</script>
 </head>
 <body>
 
@@ -97,7 +118,11 @@
   <div class="container">
     <h1>TallyAI</h1>
     <p class="subtitle">AI-powered bookkeeping inside Google Sheets. Describe expenses in plain words — the AI handles the rest. No installation, no API key, no learning curve.</p>
-    <a href="https://www.etsy.com/shop/TallyAI" class="cta">Browse on Etsy →</a>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="demo.html" class="cta" style="background:#fff;color:#1a3a2a;">Try Live Demo →</a>
+      <a href="https://github.com/zenH-jpg/tallyai#-installation" class="cta">Free Edition →</a>
+      <a href="https://www.etsy.com/shop/TallyAI" class="cta" style="background:#f57c00;">Pro Edition →</a>
+    </div>
   </div>
 </section>
 
@@ -131,10 +156,12 @@
 
 <section>
   <div class="container">
-    <h2>See It In Action</h2>
-    <div class="demo-grid">
-      <img src="tallyai-demo1.jpg" alt="AI Quick Entry sidebar" loading="lazy">
-      <img src="tallyai-demo2.jpg" alt="Monthly AI-generated report" loading="lazy">
+    <h2>Try It Now</h2>
+    <p style="text-align:center;margin-bottom:20px;color:#666;">Type an expense in plain English — watch it auto-categorize instantly</p>
+    <div style="background:#f5f3f0;border-radius:12px;padding:32px;text-align:center;">
+      <div style="font-size:2em;margin-bottom:12px;">⚡</div>
+      <p style="margin-bottom:16px;color:#555;">"coffee 4.50" → Food & Drink · "uber to airport 35" → Transportation · "client invoice $1200" → Salary</p>
+      <a href="demo.html" style="display:inline-block;background:#4CAF50;color:white;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600;">Open Live Demo →</a>
     </div>
   </div>
 </section>
@@ -224,7 +251,11 @@
 <footer>
   <div class="container">
     <p>TallyAI — AI Smart Bookkeeping Template for Google Sheets</p>
-    <p style="margin-top:8px;"><a href="https://www.etsy.com/shop/TallyAI" style="color:#4CAF50;">Visit our Etsy shop</a></p>
+    <p style="margin-top:8px;">
+      <a href="demo.html" style="color:#4CAF50;">Live Demo</a> ·
+      <a href="https://github.com/zenH-jpg/tallyai" style="color:#4CAF50;">GitHub (Free)</a> ·
+      <a href="https://www.etsy.com/shop/TallyAI" style="color:#f57c00;">Etsy Pro</a>
+    </p>
   </div>
 </footer>
 
