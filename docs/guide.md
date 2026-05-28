@@ -56,7 +56,7 @@ The Categories sheet shows all recognized categories and their keyword patterns.
 | Multi-currency | — | ✅ |
 | Auto-learning | — | ✅ |
 
-Upgrade at [tallyai.etsy.com](https://tallyai.etsy.com)
+Upgrade at [tallyai.etsy.com (75% off with SEED100)](https://tallyai.etsy.com?coupon=SEED100)
 
 ## Troubleshooting
 

@@ -2,7 +2,7 @@
 
 **Describe expenses in plain English. AI auto-categorizes them. No installations, no API keys, no learning curve.**
 
-[📋 Install on Google Sheets](#-installation) · [⭐ Upgrade to Pro](https://tallyai.etsy.com) · [📖 Documentation](docs/guide.md)
+[📋 Install on Google Sheets](#-installation) · [⭐ Upgrade to Pro (75% off)](https://tallyai.etsy.com?coupon=SEED100) · [📖 Documentation](docs/guide.md)
 
 ---
 
@@ -80,7 +80,7 @@ Google will ask for permissions — this is normal:
 | Priority support | — | ✅ |
 | **Price** | **Free** | **$12.99** |
 
-👉 **[Upgrade to Pro →](https://tallyai.etsy.com)**
+👉 **[Upgrade to Pro (75% off with SEED100) →](https://tallyai.etsy.com?coupon=SEED100)**
 
 ---
 
@@ -143,7 +143,7 @@ MIT — see [LICENSE](LICENSE) for details.
 
 Financial tools should be transparent. You can verify exactly what the template does, how it handles your data, and what gets sent where. No black boxes.
 
-The free edition is fully functional for personal use. The [Pro edition](https://tallyai.etsy.com) adds convenience features for business owners who need more power.
+The free edition is fully functional for personal use. The [Pro edition](https://tallyai.etsy.com?coupon=SEED100) adds convenience features for business owners who need more power.
 
 ---
 
