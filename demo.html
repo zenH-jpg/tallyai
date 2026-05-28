@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Bookkeeping Demo — TallyAI</title>
+<meta name="description" content="Try TallyAI's AI categorization engine: type an expense in plain English and see how it auto-categorizes. Free, no signup needed.">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #faf8f5;
+    color: #1a1a1a;
+    line-height: 1.6;
+  }
+  .container { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+
+  header {
+    background: linear-gradient(135deg, #1a3a2a, #2d5a3f);
+    color: white;
+    text-align: center;
+    padding: 40px 0 32px;
+  }
+  header h1 { font-size: 2em; margin-bottom: 8px; }
+  header p { opacity: 0.85; }
+
+  .demo-card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin: -20px auto 20px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  }
+
+  .input-group { display: flex; gap: 8px; margin-bottom: 16px; }
+  .input-group input {
+    flex: 1; padding: 12px 16px; border: 2px solid #ddd; border-radius: 8px;
+    font-size: 15px; outline: none; transition: 0.2s;
+  }
+  .input-group input:focus { border-color: #4CAF50; box-shadow: 0 0 0 3px rgba(76,175,80,0.15); }
+  .input-group button {
+    padding: 12px 24px; background: #4CAF50; color: white; border: none;
+    border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s;
+  }
+  .input-group button:hover { background: #388E3C; }
+  .input-group button:disabled { background: #a5d6a7; cursor: wait; }
+
+  .examples {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px;
+  }
+  .examples button {
+    padding: 6px 12px; border: 1px solid #ddd; border-radius: 16px; background: white;
+    font-size: 13px; cursor: pointer; transition: 0.2s; color: #555;
+  }
+  .examples button:hover { border-color: #4CAF50; color: #2d5a3f; background: #f0f7f3; }
+
+  .result-card {
+    background: #f8f6f2;
+    border-radius: 8px;
+    padding: 20px;
+    min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .result-card .prompt { font-size: 14px; color: #888; margin-bottom: 12px; }
+  .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .result-item { padding: 12px; background: white; border-radius: 8px; text-align: center; }
+  .result-item .label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+  .result-item .value { font-size: 20px; font-weight: 700; margin-top: 4px; }
+  .result-item .value.cat { color: #2d5a3f; }
+  .result-item .value.amt { color: #1a1a1a; }
+  .result-item.category { grid-column: 1 / -1; }
+  .result-item.category .value { font-size: 24px; }
+  .result-item .confidence { font-size: 12px; color: #888; margin-top: 2px; }
+  .result-item .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    background: #e0f5e8; color: #2d5a3f; font-size: 12px; font-weight: 600;
+  }
+  .result-empty {
+    text-align: center; color: #aaa; padding: 20px;
+  }
+
+  .features { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+  .features a {
+    display: block; padding: 16px; background: white; border-radius: 8px;
+    text-decoration: none; color: inherit; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    transition: 0.2s;
+  }
+  .features a:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.1); transform: translateY(-1px); }
+  .features .price { font-weight: 700; color: #2d5a3f; margin-top: 4px; }
+
+  footer { text-align: center; padding: 24px 0; color: #888; font-size: 13px; }
+
+  @media (max-width: 500px) {
+    .input-group { flex-direction: column; }
+    .result-grid { grid-template-columns: 1fr; }
+    .features { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.5em; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>📋 AI Bookkeeping Demo</h1>
+    <p>Type an expense in plain English — see how TallyAI categorizes it instantly</p>
+  </div>
+</header>
+
+<div class="container">
+  <div class="demo-card">
+    <div class="input-group">
+      <input type="text" id="input" placeholder='e.g. "coffee 4.50", "uber to airport 35", "client invoice $1200"' autofocus>
+      <button id="btn" onclick="classify()">Try It →</button>
+    </div>
+
+    <div class="examples" id="examples">
+      <button onclick="tryExample(this)">☕ coffee 4.50</button>
+      <button onclick="tryExample(this)">🛒 weekly grocery run 85.20</button>
+      <button onclick="tryExample(this)">🚕 uber to airport 35</button>
+      <button onclick="tryExample(this)">📄 client invoice $1200</button>
+      <button onclick="tryExample(this)">🍕 dinner with team 120</button>
+      <button onclick="tryExample(this)">💊 pharmacy prescription 25</button>
+    </div>
+
+    <div class="result-card" id="result">
+      <div class="result-empty">Type something and click "Try It" →</div>
+    </div>
+  </div>
+
+  <div class="features">
+    <a href="https://github.com/zenH-jpg/tallyai">
+      <div>📖 Open Source</div>
+      <div style="font-size:13px;color:#888;">Free edition on GitHub</div>
+    </a>
+    <a href="https://tallyai.etsy.com">
+      <div>⭐ Pro Edition</div>
+      <div class="price">$12.99</div>
+      <div style="font-size:13px;color:#888;">Unlimited entries + AI reports</div>
+    </a>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <p>Powered by the same AI engine as TallyAI. <a href="https://github.com/zenH-jpg/tallyai" style="color:#4CAF50;">View source on GitHub</a></p>
+  </div>
+</footer>
+
+<script>
+// ── Local categorization engine (mirrors the Google Sheets AI) ──
+const CATEGORIES = [
+  'Food & Drink', 'Groceries', 'Transportation', 'Rent',
+  'Entertainment', 'Healthcare', 'Shopping', 'Education',
+  'Utilities', 'Salary', 'Transfer', 'Travel',
+  'Insurance', 'Subscription', 'Other'
+];
+
+const PATTERNS = [
+  { regex: /\b(coffee|latte|espresso|starbucks|dunkin|cafe|bakery|croissant)\b/, cat: 'Food & Drink' },
+  { regex: /\b(grocery|supermarket|kroger|safeway|wholefoods|aldi|publix)\b/, cat: 'Groceries' },
+  { regex: /\b(uber|lyft|taxi|gas|fuel|parking|toll|metro|bus|train|subway)\b/, cat: 'Transportation' },
+  { regex: /\b(rent|mortgage|lease|apartment|condo)\b/, cat: 'Rent' },
+  { regex: /\b(movie|netflix|spotify|concert|game|ticket|cinema|hulu|disney)\b/, cat: 'Entertainment' },
+  { regex: /\b(doctor|dentist|hospital|pharmacy|medical|clinic|therapy|prescription)\b/, cat: 'Healthcare' },
+  { regex: /\b(amazon|shopping|mall|clothes|shoe|zara|nike|target|bestbuy|costco)\b/, cat: 'Shopping' },
+  { regex: /\b(course|class|tuition|book|udemy|coursera|skillshare|training)\b/, cat: 'Education' },
+  { regex: /\b(electric|water|gas|bill|phone|internet|utility|comcast|verizon)\b/, cat: 'Utilities' },
+  { regex: /\b(salary|paycheck|income|deposit|refund|bonus|invoice|client)\b/, cat: 'Salary' },
+  { regex: /\b(transfer|venmo|paypal|zelle|wire)\b/, cat: 'Transfer' },
+  { regex: /\b(lunch|dinner|breakfast|restaurant|food|takeout|delivery|doordash|pizza|sushi|team)\b/, cat: 'Food & Drink' },
+  { regex: /\b(hotel|flight|airbnb|travel|vacation|trip|booking|expedia)\b/, cat: 'Travel' },
+  { regex: /\b(insurance|aetna|bluecross|kaiser)\b/, cat: 'Insurance' },
+  { regex: /\b(subscription|membership|patreon|netflix|spotify)\b/, cat: 'Subscription' },
+];
+
+function parse(text) {
+  const lower = text.toLowerCase().trim();
+  if (!lower) return null;
+
+  const amountMatch = lower.match(/\$?(\d+[.,]?\d*)/);
+  let amount = 0, hasAmount = false;
+  if (amountMatch) {
+    amount = parseFloat(amountMatch[1].replace(',', '.'));
+    if (amount > 0) hasAmount = true;
+  }
+
+  let category = 'Other', score = 0;
+  for (const p of PATTERNS) {
+    const matches = (lower.match(p.regex) || []).length;
+    if (matches > score) { score = matches; category = p.cat; }
+  }
+
+  const hasCategory = score > 0;
+  let confidence = 0.2;
+  if (hasAmount && hasCategory) confidence = 0.85;
+  else if (hasAmount) confidence = 0.65;
+  else if (hasCategory) confidence = 0.55;
+
+  let notes = text;
+  if (amountMatch) {
+    notes = text.replace(/\$?(\d+[.,]?\d*)/g, '').replace(/\s+/g, ' ').trim();
+  }
+  if (!notes) notes = text;
+
+  let flag = null;
+  if (amount > 1000) flag = '⚠️ Large amount — verify';
+  else if (!hasAmount) flag = '🔍 No amount detected';
+
+  return { amount, category, notes, confidence, flag, hasAmount };
+}
+
+function classify() {
+  const input = document.getElementById('input');
+  const btn = document.getElementById('btn');
+  const result = document.getElementById('result');
+  const text = input.value.trim();
+
+  if (!text) { input.focus(); return; }
+
+  btn.disabled = true;
+  btn.textContent = '⏳';
+
+  setTimeout(function() {
+    const parsed = parse(text);
+    if (!parsed) {
+      result.innerHTML = '<div class="result-empty">Please enter a description.</div>';
+      btn.disabled = false;
+      btn.textContent = 'Try It →';
+      return;
+    }
+
+    const flagHtml = parsed.flag ? '<div style="font-size:13px;color:#c0392b;margin-top:8px;">' + parsed.flag + '</div>' : '';
+    const confidencePct = (parsed.confidence * 100).toFixed(0);
+
+    result.innerHTML =
+      '<div class="prompt">"' + escapeHtml(text) + '"</div>' +
+      '<div class="result-grid">' +
+        '<div class="result-item category">' +
+          '<div class="label">Category</div>' +
+          '<div class="value cat"><span class="badge">' + parsed.category + '</span></div>' +
+        '</div>' +
+        '<div class="result-item">' +
+          '<div class="label">Amount</div>' +
+          '<div class="value amt">' + (parsed.hasAmount ? '$' + parsed.amount.toFixed(2) : '—') + '</div>' +
+        '</div>' +
+        '<div class="result-item">' +
+          '<div class="label">Confidence</div>' +
+          '<div class="value" style="font-size:16px;color:' + (parsed.confidence > 0.7 ? '#2d5a3f' : '#f57c00') + '">' + confidencePct + '%</div>' +
+        '</div>' +
+      '</div>' +
+      flagHtml +
+      '<div style="margin-top:12px;font-size:12px;color:#aaa;text-align:center;">' +
+        'Powered by the same AI engine as the <a href="https://github.com/zenH-jpg/tallyai" style="color:#4CAF50;">TallyAI Google Sheets template</a>' +
+      '</div>';
+
+    btn.disabled = false;
+    btn.textContent = 'Try It →';
+  }, 300);
+}
+
+function tryExample(el) {
+  document.getElementById('input').value = el.textContent.replace(/^[^\s]+\s/, '');
+  classify();
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Enter key support
+document.getElementById('input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') classify();
+});
+</script>
+</body>
+</html>
