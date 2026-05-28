@@ -56,7 +56,9 @@ The Categories sheet shows all recognized categories and their keyword patterns.
 | Multi-currency | — | ✅ |
 | Auto-learning | — | ✅ |
 
-Upgrade at [tallyai.etsy.com (75% off with SEED100)](https://tallyai.etsy.com?coupon=SEED100)
+Upgrade at [tallyai.etsy.com (75% off with SEED100)](https://tallyai.etsy.com?coupon=SEED100) or [buy on Gumroad](https://tallybot.gumroad.com/l/bganpu)
+
+> 🚀 Need more than bookkeeping? Check out **[Freelancer OS](https://tallybot.gumroad.com/l/tpdgb)** — client pipeline, proposals, invoicing, scope guard ($49 one-time).
 
 ## Troubleshooting
 

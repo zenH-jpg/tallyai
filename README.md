@@ -2,7 +2,7 @@
 
 **Describe expenses in plain English. AI auto-categorizes them. No installations, no API keys, no learning curve.**
 
-[📋 Install on Google Sheets](#-installation) · [⭐ Upgrade to Pro (75% off)](https://tallyai.etsy.com?coupon=SEED100) · [📖 Documentation](docs/guide.md)
+[📋 Install on Google Sheets](#-installation) · [⭐ Upgrade to Pro (75% off)](https://tallyai.etsy.com?coupon=SEED100) · [🛒 Pro on Gumroad](https://tallybot.gumroad.com/l/bganpu) · [📖 Documentation](docs/guide.md) · [🚀 Freelancer OS](https://tallybot.gumroad.com/l/tpdgb)
 
 ---
 
@@ -80,7 +80,9 @@ Google will ask for permissions — this is normal:
 | Priority support | — | ✅ |
 | **Price** | **Free** | **$12.99** |
 
-👉 **[Upgrade to Pro (75% off with SEED100) →](https://tallyai.etsy.com?coupon=SEED100)**
+👉 **[Upgrade to Pro (75% off with SEED100) →](https://tallyai.etsy.com?coupon=SEED100)** · [Buy Pro on Gumroad →](https://tallybot.gumroad.com/l/bganpu)
+
+> 🚀 Also check out **[Freelancer OS](https://tallybot.gumroad.com/l/tpdgb)** — a complete freelance business system ($49) with pipeline management, proposal templates, invoice tracking, and scope guard. Works great alongside TallyAI.
 
 ---
 
@@ -143,7 +145,7 @@ MIT — see [LICENSE](LICENSE) for details.
 
 Financial tools should be transparent. You can verify exactly what the template does, how it handles your data, and what gets sent where. No black boxes.
 
-The free edition is fully functional for personal use. The [Pro edition](https://tallyai.etsy.com?coupon=SEED100) adds convenience features for business owners who need more power.
+The free edition is fully functional for personal use. The [Pro edition](https://tallyai.etsy.com?coupon=SEED100) (or [Gumroad](https://tallybot.gumroad.com/l/bganpu)) adds convenience features for business owners who need more power.
 
 ---
 
