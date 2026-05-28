@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base target="_top">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #faf8f5;
+    padding: 16px;
+    color: #1a1a1a;
+    font-size: 14px;
+  }
+  .logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2d5a3f;
+    margin-bottom: 4px;
+  }
+  .subtitle {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 16px;
+  }
+  .input-area {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  #expenseInput {
+    flex: 1;
+    padding: 10px 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  #expenseInput:focus {
+    border-color: #4CAF50;
+  }
+  #expenseInput::placeholder {
+    color: #aaa;
+    font-style: italic;
+  }
+  .btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: #4CAF50;
+    color: white;
+  }
+  .btn-primary:hover { background: #388E3C; }
+  .btn-primary:disabled { background: #a5d6a7; cursor: wait; }
+
+  .status {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 12px;
+    min-height: 18px;
+  }
+  .result {
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .result .category {
+    display: inline-block;
+    background: #e0f5e8;
+    color: #2d5a3f;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .result .amount {
+    float: right;
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .result .desc {
+    margin: 4px 0;
+    color: #555;
+  }
+  .result .date { font-size: 11px; color: #aaa; }
+  .result .flag {
+    color: #c0392b;
+    font-size: 11px;
+    font-style: italic;
+  }
+  .counter {
+    text-align: center;
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 16px;
+  }
+  .upgrade-banner {
+    background: #fff8e1;
+    border: 1px solid #ffd54f;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-top: 16px;
+    font-size: 12px;
+    text-align: center;
+  }
+  .upgrade-banner a {
+    color: #f57c00;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .upgrade-banner a:hover { text-decoration: underline; }
+  .history-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin: 16px 0 8px;
+  }
+  .error { color: #c0392b; font-size: 12px; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<div class="logo">📋 AI Bookkeeping</div>
+<div class="subtitle">Describe expenses in plain English</div>
+
+<div class="input-area">
+  <input type="text" id="expenseInput" placeholder='e.g. "coffee 4.50" or "lunch 32.50"' autocomplete="off" autofocus>
+  <button class="btn btn-primary" id="submitBtn" onclick="handleSubmit()">+</button>
+</div>
+
+<div class="status" id="status">Ready. Just type what you spent.</div>
+<div class="error" id="error"></div>
+<div id="recentEntries"></div>
+
+<div class="counter" id="counter"></div>
+
+<div class="upgrade-banner">
+  ✨ Free edition — 50 entries limit.<br>
+  <a href="https://tallyai.etsy.com" target="_blank">Upgrade for unlimited →</a>
+</div>
+
+<script>
+  var input = document.getElementById('expenseInput');
+  var status = document.getElementById('status');
+  var error = document.getElementById('error');
+  var recent = document.getElementById('recentEntries');
+  var counter = document.getElementById('counter');
+
+  var history = JSON.parse(localStorage.getItem('tallyai_history') || '[]');
+
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') handleSubmit();
+  });
+
+  function handleSubmit() {
+    var text = input.value.trim();
+    if (!text) return;
+
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    status.textContent = '🤖 AI analyzing...';
+    error.textContent = '';
+
+    google.script.run
+      .withSuccessHandler(function(json) {
+        btn.disabled = false;
+        var data = JSON.parse(json);
+        if (data.error) {
+          if (data.error === 'limit') {
+            error.textContent = data.msg;
+            updateCounter(data.count, data.limit);
+          } else {
+            error.textContent = '⚠️ ' + data.error;
+          }
+          status.textContent = 'Ready.';
+          return;
+        }
+        var r = data.result;
+        status.textContent = '✅ Added: ' + (r.notes || text).substring(0, 40);
+        input.value = '';
+        input.focus();
+
+        history.unshift({ text: text, cat: r.category, amt: r.amount, date: r.date });
+        if (history.length > 10) history.pop();
+        localStorage.setItem('tallyai_history', JSON.stringify(history));
+        renderHistory();
+        updateCounter(data.count, data.limit);
+      })
+      .withFailureHandler(function(err) {
+        btn.disabled = false;
+        error.textContent = '⚠️ Error: ' + err.message;
+        status.textContent = 'Ready.';
+      })
+      .quickEntry(text);
+  }
+
+  function renderHistory() {
+    if (history.length === 0) {
+      recent.innerHTML = '';
+      return;
+    }
+    var html = '<div class="history-title">Recent</div>';
+    for (var i = 0; i < history.length; i++) {
+      var h = history[i];
+      var flag = h.flag ? '<div class="flag">' + h.flag + '</div>' : '';
+      html += '<div class="result">' +
+        '<span class="category">' + h.cat + '</span>' +
+        '<span class="amount">$' + (parseFloat(h.amt) || 0).toFixed(2) + '</span>' +
+        '<div class="desc">' + h.text.substring(0, 50) + '</div>' +
+        '<span class="date">' + (h.date || '') + '</span>' + flag +
+        '</div>';
+    }
+    recent.innerHTML = html;
+  }
+
+  function updateCounter(count, limit) {
+    var remaining = Math.max(0, limit - count);
+    if (remaining <= 10) {
+      counter.innerHTML = '⚠️ <b>' + remaining + '</b> entries remaining in free edition';
+      counter.style.color = '#c0392b';
+    } else {
+      counter.innerHTML = '✅ <b>' + count + '</b>/' + limit + ' entries used';
+      counter.style.color = '#aaa';
+    }
+  }
+
+  renderHistory();
+  // Ensure focus stays on input
+  setTimeout(function() { input.focus(); }, 100);
+</script>
+</body>
+</html>
