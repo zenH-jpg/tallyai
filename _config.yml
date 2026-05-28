@@ -1,0 +1,10 @@
+# TallyAI — GitHub Pages config
+# Static site, no Jekyll processing needed
+plugins: []
+theme: null
+markdown: none
+include:
+  - _config.yml
+  - sitemap.xml
+  - robots.txt
+  - .nojekyll
