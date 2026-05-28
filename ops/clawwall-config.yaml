@@ -1,0 +1,73 @@
+# ClawWall — OpenClaw policy firewall
+# Installation: openclaw plugins install @clawwall/plugin
+# This config: conservative — block all high-risk actions
+
+version: "1.0"
+mode: "enforce"         # "log" for dry-run, "enforce" for production
+
+# ── Default rules (applied to all skills) ──
+default:
+  rate_limit: 30/minute  # Max tool calls per minute
+  budget_daily_tokens: 500000  # Hard daily token cap
+  budget_daily_cost: 0.50  # $0.50/day hard cap
+
+# ── Tool-level policies ──
+tools:
+  exec:
+    allow: false          # NEVER allow arbitrary shell execution
+    reason: "Extreme risk — prefer sandboxed exec or API calls"
+
+  gateway:
+    allow: false          # Block external network access
+    reason: "Prevent data exfiltration via gateway tunnel"
+
+  cron:
+    allow: false          # Block scheduled task creation
+    reason: "Prevent persistence mechanisms (see Agents of Chaos)"
+
+  config:
+    allow: false          # Block config modification at runtime
+    reason: "Prevent self-escalation or sandbox escape"
+
+  filesystem:
+    allow: true
+    paths:
+      allow:              # Only these directories
+        - "/home/openclaw/data"
+        - "/tmp/openclaw"
+      deny:               # Never touch these
+        - "/etc"
+        - "/var"
+        - "/home/openclaw/.ssh"
+        - "/home/openclaw/.config/openclaw/keys"
+    max_file_size: 1MB    # Prevent exfiltration of large files
+    read_only: false      # Allow writes within allowed paths
+
+  network:
+    allow_domains:        # Whitelist — only connect here
+      - "api.openai.com"
+      - "api.anthropic.com"
+      - "api.gumroad.com"
+      - "github.com"
+      - "raw.githubusercontent.com"
+    deny_domains:
+      - "*"               # Block everything else
+
+  webhook:
+    allow: false
+    reason: "Prevent social engineering callbacks"
+
+# ── Skill policies ──
+skills:
+  untrusted:
+    allow: false          # Block all unverified community skills
+    reason: "824 malicious skills found on ClawHub — zero-trust"
+
+# ── Monitoring ──
+monitoring:
+  alert_webhook: ""       # Set to Slack/Telegram webhook URL
+  alert_on:
+    - tool_blocked        # Alert when a tool is blocked
+    - rate_limit_exceeded
+    - budget_exceeded
+  log_level: "debug"      # Log all decisions

@@ -1,0 +1,60 @@
+# OpenClaw isolated runtime — Lima VM config
+# Usage: limactl start ops/lima-vm-config.yaml
+# Architecture: arm64 (Apple Silicon M5)
+
+images:
+  - location: "https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-arm64.img"
+    arch: "aarch64"
+
+memory: "4GiB"
+cpus: 2
+
+mounts:
+  - location: "~"
+    writable: false
+  - location: "/tmp/openclaw-data"
+    writable: true
+
+ssh:
+  forwardAgent: false
+  loadDotSSHPubKeys: true
+
+networks:
+  - lima: user-v2
+
+portForwards:
+  # OpenClaw Gateway — localhost only
+  - guestPort: 7379
+    guestIP: 127.0.0.1
+    hostPort: 7379
+    hostIP: 127.0.0.1
+  # Clawnitor WebSocket — localhost only
+  - guestPort: 8088
+    guestIP: 127.0.0.1
+    hostPort: 8088
+    hostIP: 127.0.0.1
+
+provision:
+  - mode: system
+    script: |
+      #!/bin/bash
+      set -eux
+      # Harden sysctl
+      cat >> /etc/sysctl.d/90-openclaw.conf <<'SYSCTL'
+net.ipv4.tcp_syncookies=1
+net.ipv4.conf.all.rp_filter=1
+net.ipv4.conf.default.rp_filter=1
+net.ipv4.conf.all.accept_redirects=0
+net.ipv4.conf.default.accept_redirects=0
+kernel.kptr_restrict=2
+kernel.dmesg_restrict=1
+SYSCTL
+      sysctl --system
+
+  - mode: user
+    script: |
+      #!/bin/bash
+      set -eux
+      # Create minimal OpenClaw user
+      sudo useradd -m -s /bin/bash -G docker openclaw || true
+      echo "openclaw ALL=(ALL) NOPASSWD:/usr/bin/systemctl" | sudo tee /etc/sudoers.d/openclaw
